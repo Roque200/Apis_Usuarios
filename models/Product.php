@@ -1,13 +1,17 @@
 <?php
-class User
+class Product
 {
     private $conn;
-    private $table_name = "users";
+    private $table_name = "productos";
 
     public $id;
+    public $sku;
     public $name;
-    public $email;
+    public $description;
+    public $price;
+    public $stock;
     public $created_at;
+    public $updated_at;
 
     public function __construct($db)
     {
@@ -17,15 +21,22 @@ class User
     public function create()
     {
         $query = "INSERT INTO " . $this->table_name . " 
-                  SET name=:name, email=:email";
+                  SET sku=:sku, name=:name, description=:description, 
+                      price=:price, stock=:stock";
 
         $stmt = $this->conn->prepare($query);
 
+        $this->sku = htmlspecialchars(strip_tags($this->sku));
         $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->description = htmlspecialchars(strip_tags($this->description));
+        $this->price = htmlspecialchars(strip_tags($this->price));
+        $this->stock = htmlspecialchars(strip_tags($this->stock));
 
+        $stmt->bindParam(":sku", $this->sku);
         $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":description", $this->description);
+        $stmt->bindParam(":price", $this->price);
+        $stmt->bindParam(":stock", $this->stock);
 
         if ($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();
@@ -36,7 +47,7 @@ class User
 
     public function read()
     {
-        $query = "SELECT id, name, email, created_at 
+        $query = "SELECT id, sku, name, description, price, stock, created_at, updated_at 
                   FROM " . $this->table_name . " 
                   ORDER BY created_at DESC";
 
@@ -47,7 +58,7 @@ class User
 
     public function readOne()
     {
-        $query = "SELECT id, name, email, created_at 
+        $query = "SELECT id, sku, name, description, price, stock, created_at, updated_at 
                   FROM " . $this->table_name . " 
                   WHERE id = :id 
                   LIMIT 1";
@@ -59,9 +70,13 @@ class User
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
+            $this->sku = $row['sku'];
             $this->name = $row['name'];
-            $this->email = $row['email'];
+            $this->description = $row['description'];
+            $this->price = $row['price'];
+            $this->stock = $row['stock'];
             $this->created_at = $row['created_at'];
+            $this->updated_at = $row['updated_at'];
             return true;
         }
         return false;
@@ -70,17 +85,24 @@ class User
     public function update()
     {
         $query = "UPDATE " . $this->table_name . " 
-                  SET name = :name, email = :email
+                  SET sku = :sku, name = :name, description = :description, 
+                      price = :price, stock = :stock 
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
 
+        $this->sku = htmlspecialchars(strip_tags($this->sku));
         $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->description = htmlspecialchars(strip_tags($this->description));
+        $this->price = htmlspecialchars(strip_tags($this->price));
+        $this->stock = htmlspecialchars(strip_tags($this->stock));
         $this->id = htmlspecialchars(strip_tags($this->id));
 
+        $stmt->bindParam(':sku', $this->sku);
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':price', $this->price);
+        $stmt->bindParam(':stock', $this->stock);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

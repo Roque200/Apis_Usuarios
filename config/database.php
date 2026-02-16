@@ -1,10 +1,12 @@
 <?php
 class Database
 {
-    private $host = "dbmy";
-    private $db_name = "tap";
-    private $username = "root";
-    private $password = "password";
+    private $host = "localhost";
+    private $db_name = "topicosweb";
+    private $username = "db_21031190";
+    private $password = "21031190";
+
+   
 
 
     public $conn;

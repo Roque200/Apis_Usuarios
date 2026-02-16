@@ -92,7 +92,7 @@ class UserResource
             }
         } else {
             http_response_code(400);
-            echo json_encode(array("message" => "Datos incompletos"));
+            echo json_encode(array("message" => "Datos incompletos. Se requiere name y email"));
         }
     }
 
@@ -118,7 +118,7 @@ class UserResource
             }
         } else {
             http_response_code(400);
-            echo json_encode(array("message" => "Datos incompletos"));
+            echo json_encode(array("message" => "Datos incompletos. Se requiere name y email"));
         }
     }
 
